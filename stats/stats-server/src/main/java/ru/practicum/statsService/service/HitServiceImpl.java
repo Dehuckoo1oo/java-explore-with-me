@@ -23,11 +23,20 @@ public class HitServiceImpl implements HitService {
 
     @Override
     public List<StatsDTO> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        boolean isUrisEmpty = uris.isEmpty();
         List<Hit> hits;
         if (unique) {
-            hits = hitRepository.findByTimestampBetweenAndUrisUnique(start, end, uris);
+            if(isUrisEmpty){
+                hits = hitRepository.findByTimestampBetweenUnique(start, end);
+            } else {
+                hits = hitRepository.findByTimestampBetweenAndUrisUnique(start, end, uris);
+            }
         } else {
-            hits = hitRepository.findByTimestampBetweenAndUris(start, end, uris);
+            if(isUrisEmpty){
+                hits = hitRepository.findByTimestampBetween(start, end);
+            } else {
+                hits = hitRepository.findByTimestampBetweenAndUris(start, end, uris);
+            }
         }
         Map<String, StatsDTO> statsMap = new HashMap<>();
         for (Hit hit : hits) {
@@ -41,6 +50,7 @@ public class HitServiceImpl implements HitService {
             }
         }
         List<StatsDTO> statsList = new ArrayList<>(statsMap.values());
+        statsList.sort(Comparator.comparingInt(StatsDTO::getHits).reversed());
         return statsList;
     }
 
