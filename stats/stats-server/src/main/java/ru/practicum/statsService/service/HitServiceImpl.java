@@ -23,7 +23,7 @@ public class HitServiceImpl implements HitService {
 
     @Override
     public List<StatsDTO> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        boolean isUrisEmpty = uris.isEmpty();
+        boolean isUrisEmpty = uris == null;
         List<Hit> hits;
         if (unique) {
             if (isUrisEmpty) {
