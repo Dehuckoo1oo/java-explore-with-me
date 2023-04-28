@@ -26,13 +26,13 @@ public class HitServiceImpl implements HitService {
         boolean isUrisEmpty = uris.isEmpty();
         List<Hit> hits;
         if (unique) {
-            if(isUrisEmpty){
+            if (isUrisEmpty) {
                 hits = hitRepository.findByTimestampBetweenUnique(start, end);
             } else {
                 hits = hitRepository.findByTimestampBetweenAndUrisUnique(start, end, uris);
             }
         } else {
-            if(isUrisEmpty){
+            if (isUrisEmpty) {
                 hits = hitRepository.findByTimestampBetween(start, end);
             } else {
                 hits = hitRepository.findByTimestampBetweenAndUris(start, end, uris);
