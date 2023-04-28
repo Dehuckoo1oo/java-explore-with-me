@@ -3,7 +3,6 @@ package ru.practicum.statsService.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
