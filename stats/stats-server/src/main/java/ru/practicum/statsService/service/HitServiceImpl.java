@@ -1,0 +1,51 @@
+package ru.practicum.statsService.service;
+
+import org.springframework.stereotype.Service;
+import ru.practicum.statsDTO.HitDTO;
+import ru.practicum.statsDTO.StatsDTO;
+import ru.practicum.statsService.mapper.HitMapper;
+import ru.practicum.statsService.model.Hit;
+import ru.practicum.statsService.repository.HitRepository;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+@Service
+public class HitServiceImpl implements HitService {
+
+    private final HitRepository hitRepository;
+    private final HitMapper hitMapper;
+
+    public HitServiceImpl(HitRepository hitRepository, HitMapper hitMapper) {
+        this.hitRepository = hitRepository;
+        this.hitMapper = hitMapper;
+    }
+
+    @Override
+    public List<StatsDTO> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        List<Hit> hits;
+        if (unique) {
+            hits = hitRepository.findByTimestampBetweenAndUrisUnique(start, end, uris);
+        } else {
+            hits = hitRepository.findByTimestampBetweenAndUris(start, end, uris);
+        }
+        Map<String, StatsDTO> statsMap = new HashMap<>();
+        for (Hit hit : hits) {
+            String key = hit.getApp() + hit.getUri();
+            StatsDTO statsDTO = statsMap.get(key);
+            if (statsDTO == null) {
+                statsDTO = new StatsDTO(hit.getApp(), hit.getUri(), 1);
+                statsMap.put(key, statsDTO);
+            } else {
+                statsDTO.setHits(statsDTO.getHits() + 1);
+            }
+        }
+        List<StatsDTO> statsList = new ArrayList<>(statsMap.values());
+        return statsList;
+    }
+
+    @Override
+    public HitDTO createHit(HitDTO hitDTO) {
+        return hitMapper.mapEntityToDTO(hitRepository.save(hitMapper.mapDTOToEntity(hitDTO)));
+    }
+}
