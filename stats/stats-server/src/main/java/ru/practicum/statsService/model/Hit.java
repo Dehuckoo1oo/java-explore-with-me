@@ -17,8 +17,11 @@ public class Hit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(length = 255, nullable = false)
     private String app;
+    @Column(length = 8000)
     private String uri;
+    @Column(length = 15, nullable = false)
     private String ip;
     private LocalDateTime timestamp;
 }

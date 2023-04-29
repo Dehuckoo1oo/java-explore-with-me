@@ -25,7 +25,6 @@ public class HitsAPIController {
         return hitService.createHit(hitDTO);
     }
 
-
     @GetMapping("/stats")
     public List<StatsDTO> getStats(@RequestParam("start") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                               LocalDateTime start,
