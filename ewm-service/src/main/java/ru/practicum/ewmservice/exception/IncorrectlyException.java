@@ -5,9 +5,7 @@ import lombok.Getter;
 @Getter
 public class IncorrectlyException extends RuntimeException {
 
-    private final String parameter;
-
-    public IncorrectlyException(String parameter) {
-        this.parameter = parameter;
+    public IncorrectlyException(String message) {
+        super(message);
     }
 }
