@@ -26,8 +26,8 @@ public class EventMapper {
     private final CategoryMapper categoryMapper;
     private final StatsClient statsClient;
 
-    public EventMapper(LocationMapper locationMapper, CategoryMapper categoryMapper, UserMapper userMapper
-            , StatsClient statsClient) {
+    public EventMapper(LocationMapper locationMapper, CategoryMapper categoryMapper, UserMapper userMapper,
+                       StatsClient statsClient) {
         this.locationMapper = locationMapper;
         this.categoryMapper = categoryMapper;
         this.userMapper = userMapper;

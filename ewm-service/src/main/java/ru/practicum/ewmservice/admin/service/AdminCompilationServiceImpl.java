@@ -8,7 +8,6 @@ import ru.practicum.ewmservice.compilation.DTO.NewCompilationDTO;
 import ru.practicum.ewmservice.compilation.DTO.UpdateCompilationDTO;
 import ru.practicum.ewmservice.compilation.mapper.CompilationMapper;
 import ru.practicum.ewmservice.compilation.model.Compilation;
-import ru.practicum.ewmservice.event.DTO.EventShortDTO;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.exception.IncorrectlyException;
