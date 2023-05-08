@@ -13,5 +13,5 @@ import java.util.List;
 @Builder
 public class EventRequestStatusUpdateResult {
     private List<ParticipationRequestDTO> confirmedRequests;
-    private List<ParticipationRequestDTO> rejectedRequest;
+    private List<ParticipationRequestDTO> rejectedRequests;
 }

@@ -44,7 +44,7 @@ public class RequestMapper {
                         .filter(request -> request.getRequestStatus().equals(RequestStatus.CONFIRMED))
                         .map(this::mapEntityToDTO)
                         .collect(Collectors.toList()))
-                .rejectedRequest(event.getParticipationRequests().stream()
+                .rejectedRequests(event.getParticipationRequests().stream()
                         .filter(request -> request.getRequestStatus().equals(RequestStatus.REJECTED))
                         .map(this::mapEntityToDTO)
                         .collect(Collectors.toList()))
