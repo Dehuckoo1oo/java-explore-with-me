@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.repository.PrivateEventRepository;
+import ru.practicum.ewmservice.exception.ConflictException;
 import ru.practicum.ewmservice.exception.NoSuchBodyException;
 import ru.practicum.ewmservice.exception.NotFoundResourceException;
 import ru.practicum.ewmservice.request.DTO.ParticipationRequestDTO;
@@ -14,6 +15,7 @@ import ru.practicum.ewmservice.request.repository.PrivateRequestRepository;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,36 +41,38 @@ public class PrivateRequestServiceImpl implements PrivateRequestService {
                 new NoSuchBodyException(String.format("Event with id=%s was not found", eventId)));
         long duplicate = event.getParticipationRequests().stream().filter(request -> request.getRequester()
                 .equals(user)).count();
-        if (duplicate > 0L) {
-            throw new NotFoundResourceException("Error: Request already exists");
+        if (duplicate > 0) {
+            throw new ConflictException("Error: Request already exists");
         }
         if (event.getInitiator().getId().equals(userId)) {
-            throw new NotFoundResourceException("Error: Can't request owned Event");
+            throw new ConflictException("Error: Can't request owned Event");
         }
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            throw new NotFoundResourceException("Error: Event not published");
+            throw new ConflictException("Error: Event not published");
         }
         long activeRequestCount = event.getParticipationRequests().stream()
-                .filter(request -> !request.getRequestStatus().equals(RequestStatus.CANCELED) &&
-                !request.getRequestStatus().equals(RequestStatus.REJECTED)).count();
+                .filter(request -> request.getRequestStatus().equals(RequestStatus.CONFIRMED)).count();
         if (event.getParticipantLimit() != 0 && event.getParticipantLimit() <= activeRequestCount) {
-            throw new NotFoundResourceException("Error: Request limit exceeded");
+            throw new ConflictException("Error: Request limit exceeded");
         }
         ParticipationRequest participationRequest;
-        if(event.getRequestModeration() && event.getParticipantLimit() == 0){
+        if (event.getRequestModeration()) {
             participationRequest = ParticipationRequest.builder()
                     .requestStatus(RequestStatus.PENDING)
+                    .created(LocalDateTime.now())
                     .requester(user)
                     .event(event)
                     .build();
         } else {
             participationRequest = ParticipationRequest.builder()
                     .requestStatus(RequestStatus.CONFIRMED)
+                    .created(LocalDateTime.now())
                     .requester(user)
                     .event(event)
                     .build();
         }
-        return requestMapper.mapEntityToDTO(privateRequestRepository.save(participationRequest));
+        ParticipationRequest participationRequest1 = privateRequestRepository.save(participationRequest);
+        return requestMapper.mapEntityToDTO(participationRequest1);
     }
 
     @Override

@@ -15,14 +15,6 @@ public class CategoryMapper {
         return category;
     }
 
-    public Category mapDTOToEntity(CategoryDTO categoryDTO) {
-        Category category = Category.builder()
-                .id(categoryDTO.getId())
-                .name(categoryDTO.getName())
-                .build();
-        return category;
-    }
-
     public CategoryDTO mapEntityToDTO(Category category) {
         CategoryDTO categoryDTO = CategoryDTO.builder()
                 .id(category.getId())

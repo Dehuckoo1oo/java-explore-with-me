@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.ewmservice.category.model.Category;
 
 @Repository
-public interface PublicCategoryRepository extends JpaRepository<Category,Integer> {
+public interface PublicCategoryRepository extends JpaRepository<Category, Integer> {
 }

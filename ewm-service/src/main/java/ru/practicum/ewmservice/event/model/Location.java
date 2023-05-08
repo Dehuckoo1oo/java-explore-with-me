@@ -3,7 +3,6 @@ package ru.practicum.ewmservice.event.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

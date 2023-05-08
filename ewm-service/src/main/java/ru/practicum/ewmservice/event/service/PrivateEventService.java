@@ -1,7 +1,5 @@
 package ru.practicum.ewmservice.event.service;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.ewmservice.event.DTO.EventFullDTO;
 import ru.practicum.ewmservice.event.DTO.NewEventDTO;
 import ru.practicum.ewmservice.event.DTO.UpdateEventDTO;
@@ -23,6 +21,6 @@ public interface PrivateEventService {
     List<ParticipationRequestDTO> getRequestsByUserEvent(Integer userId, Integer eventId);
 
     EventRequestStatusUpdateResult updateRequestByUserEvent(Integer userId, Integer eventId,
-                                                                  EventRequestStatusUpdateRequest
-                                                                          eventRequestStatusUpdateRequest);
+                                                            EventRequestStatusUpdateRequest
+                                                                    eventRequestStatusUpdateRequest);
 }

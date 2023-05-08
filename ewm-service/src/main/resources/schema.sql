@@ -4,26 +4,26 @@ DROP TABLE IF EXISTS locations CASCADE;
 DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS requests CASCADE;
 DROP TABLE IF EXISTS compilations CASCADE;
-DROP TABLE IF EXISTS compilationEvents CASCADE;
+DROP TABLE IF EXISTS compilation_events CASCADE;
 
 CREATE TABLE users
 (
-    id    integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name  varchar(255) not null,
-    email varchar(800) not null
+    id    INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name  VARCHAR(255) NOT NULL,
+    email VARCHAR(800) NOT NULL
 );
 
 CREATE TABLE categories
 (
-    id   integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name varchar(255) not null
+    id   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE locations
 (
-    id  integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    lat double precision not null,
-    lon double precision not null
+    id  INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    lat DOUBLE PRECISION NOT NULL,
+    lon DOUBLE PRECISION NOT NULL
 );
 
 CREATE TABLE events
@@ -48,7 +48,7 @@ CREATE TABLE requests
 (
     id             INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     created        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    event_id       INTEGER                     NOT NULL,
+    event          INTEGER                     NOT NULL,
     requester      INTEGER                     NOT NULL,
     request_status VARCHAR(9)
 
@@ -58,20 +58,20 @@ CREATE TABLE compilations
 (
     id     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title  VARCHAR(255) NOT NULL UNIQUE,
-    pinned boolean      NOT NULL
+    pinned BOOLEAN      NOT NULL
 );
 
-CREATE TABLE compilationEvents
+CREATE TABLE compilation_events
 (
-    id             integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    compilation_id INTEGER NOT NULL,
-    event_id       INTEGER NOT NULL
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    compilation INTEGER NOT NULL,
+    event       INTEGER NOT NULL
 );
 
-ALTER TABLE compilationEvents
-    ADD FOREIGN KEY (compilation_id) REFERENCES compilations (id) ON DELETE CASCADE;
-ALTER TABLE compilationEvents
-    ADD FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE;
+ALTER TABLE compilation_events
+    ADD FOREIGN KEY (compilation) REFERENCES compilations (id) ON DELETE CASCADE;
+ALTER TABLE compilation_events
+    ADD FOREIGN KEY (event) REFERENCES events (id) ON DELETE CASCADE;
 ALTER TABLE events
     ADD FOREIGN KEY (initiator) REFERENCES users (id) ON DELETE CASCADE;
 ALTER TABLE events
@@ -81,4 +81,4 @@ ALTER TABLE events
 ALTER TABLE requests
     ADD FOREIGN KEY (requester) REFERENCES users (id) ON DELETE CASCADE;
 ALTER TABLE requests
-    ADD FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE;
+    ADD FOREIGN KEY (event) REFERENCES events (id) ON DELETE CASCADE;

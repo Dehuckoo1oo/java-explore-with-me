@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface AdminUserService {
     public UserDTO createUser(NewUserDTO newUserDTO);
+
     public UserDTO deleteUser(Integer userId);
+
     public List<UserDTO> getUsers(List<Integer> ids, int from, int size);
 }

@@ -4,6 +4,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewmservice.exception.ConflictException;
 import ru.practicum.ewmservice.user.mapper.UserMapper;
 import ru.practicum.ewmservice.user.DTO.NewUserDTO;
 import ru.practicum.ewmservice.user.model.User;
@@ -27,6 +28,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public UserDTO createUser(NewUserDTO newUserDTO) {
+        if (adminUserRepository.findUserByName(newUserDTO.getName()).isPresent()) {
+            throw new ConflictException("Пользователь с именем " + newUserDTO.getName() + " уже существует");
+        }
         User user = adminUserRepository.save(userMapper.mapUserFromNewDTO(newUserDTO));
         return userMapper.mapDTOFromUser(user);
     }

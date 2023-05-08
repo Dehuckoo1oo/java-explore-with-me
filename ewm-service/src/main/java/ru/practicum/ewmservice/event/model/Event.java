@@ -26,7 +26,7 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
-    @OneToMany(mappedBy = "requester")
+    @OneToMany(mappedBy = "event")
     private List<ParticipationRequest> participationRequests;
     @Column(name = "created_on")
     private LocalDateTime createdOn;

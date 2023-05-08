@@ -14,6 +14,6 @@ import java.util.List;
 public class NewCompilationDTO {
     private List<Integer> events;
     private Boolean pinned;
-    @NotBlank
+    @NotBlank()
     private String title;
 }

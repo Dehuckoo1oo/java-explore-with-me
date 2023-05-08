@@ -2,6 +2,7 @@ package ru.practicum.ewmservice.admin.DTO;
 
 import lombok.*;
 import ru.practicum.ewmservice.event.DTO.LocationDTO;
+import ru.practicum.ewmservice.event.enums.EventStateAction;
 
 @Getter
 @Setter
@@ -18,6 +19,6 @@ public class UpdateEventAdminRequest {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    private String stateAction;
+    private EventStateAction stateAction;
     private String title;
 }

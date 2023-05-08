@@ -22,9 +22,9 @@ public class Compilation {
     private Boolean pinned;
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
-            name = "compilationEvent",
-            joinColumns = {@JoinColumn(name = "compilationId")},
-            inverseJoinColumns = {@JoinColumn(name = "eventId")}
+            name = "compilation_events",
+            joinColumns = {@JoinColumn(name = "compilation")},
+            inverseJoinColumns = {@JoinColumn(name = "event")}
     )
     private Set<Event> events;
 }

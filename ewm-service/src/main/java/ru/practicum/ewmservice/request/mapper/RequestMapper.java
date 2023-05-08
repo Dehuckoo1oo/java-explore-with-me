@@ -8,17 +8,17 @@ import ru.practicum.ewmservice.request.model.EventRequestStatusUpdateResult;
 import ru.practicum.ewmservice.request.model.ParticipationRequest;
 import ru.practicum.ewmservice.user.model.User;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @Component
 public class RequestMapper {
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public ParticipationRequest mapDTOToEntity(ParticipationRequestDTO participationRequestDTO, Event event,
                                                User requester) {
         ParticipationRequest participationRequest = ParticipationRequest.builder()
-                .created(null)
+                .created(LocalDateTime.now())
                 .event(event)
                 .requester(requester)
                 .requestStatus(RequestStatus.valueOf(participationRequestDTO.getStatus()))
@@ -27,6 +27,7 @@ public class RequestMapper {
     }
 
     public ParticipationRequestDTO mapEntityToDTO(ParticipationRequest participationRequest) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         ParticipationRequestDTO participationRequestDTO = ParticipationRequestDTO.builder()
                 .created(participationRequest.getCreated().format(dateTimeFormatter))
                 .status(participationRequest.getRequestStatus().toString())
@@ -37,7 +38,7 @@ public class RequestMapper {
         return participationRequestDTO;
     }
 
-    public EventRequestStatusUpdateResult mapResultByEvent(Event event){
+    public EventRequestStatusUpdateResult mapResultByEvent(Event event) {
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = EventRequestStatusUpdateResult.builder()
                 .confirmedRequests(event.getParticipationRequests().stream()
                         .filter(request -> request.getRequestStatus().equals(RequestStatus.CONFIRMED))

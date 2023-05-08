@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PublicCompilationServiceImpl implements PublicCompilationService{
+public class PublicCompilationServiceImpl implements PublicCompilationService {
     private PublicCompilationRepository publicCompilationRepository;
     private CompilationMapper compilationMapper;
 
@@ -24,7 +24,7 @@ public class PublicCompilationServiceImpl implements PublicCompilationService{
 
     @Override
     public List<CompilationDTO> getCompilations(Boolean pinned, int from, int size) {
-        List<Compilation> compilations = publicCompilationRepository.findByPinned(pinned, PageRequest.of(from,size));
+        List<Compilation> compilations = publicCompilationRepository.findByPinned(pinned, PageRequest.of(from, size));
         return compilations.stream().map(compilationMapper::mapEntityToDTO).collect(Collectors.toList());
     }
 
@@ -32,6 +32,6 @@ public class PublicCompilationServiceImpl implements PublicCompilationService{
     public CompilationDTO findCompilation(Integer compId) {
         return compilationMapper.mapEntityToDTO(publicCompilationRepository.findById(compId).orElseThrow(() ->
                 new IncorrectlyException(String.format("Failed: compilation. " +
-                        "Error: подборка не найдена. Value:%s", compId)))) ;
+                        "Error: подборка не найдена. Value:%s", compId))));
     }
 }

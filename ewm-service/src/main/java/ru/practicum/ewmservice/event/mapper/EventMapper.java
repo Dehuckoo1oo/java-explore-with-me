@@ -25,7 +25,6 @@ public class EventMapper {
     private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
     private final StatsClient statsClient;
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public EventMapper(LocationMapper locationMapper, CategoryMapper categoryMapper, UserMapper userMapper
             , StatsClient statsClient) {
@@ -36,14 +35,10 @@ public class EventMapper {
     }
 
     public Event mapNewToEntity(NewEventDTO newEventDTO, User initiator, Category category, Location location) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         EventState eventState;
-        LocalDateTime publishedOn = null;
-        if(newEventDTO.getRequestModeration()){
-            eventState = EventState.PENDING;
-        } else {
-            eventState = EventState.PUBLISHED;
-            publishedOn= LocalDateTime.now();
-        }
+        LocalDateTime publishedOn = LocalDateTime.now();
+        eventState = EventState.PENDING;
         LocalDateTime timestamp = LocalDateTime.now();
         Event event = Event.builder()
                 .annotation(newEventDTO.getAnnotation())
@@ -65,8 +60,9 @@ public class EventMapper {
     }
 
     public EventFullDTO mapEntityToFullDTO(Event event) {
-        Integer stats = statsClient.getStats(null,null, List.of(event.getId().toString()),false)
-                .getOrDefault(event.getId(),0);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        Integer stats = statsClient.getStats(null, null, List.of(event.getId().toString()), false)
+                .getOrDefault(event.getId(), 0);
         EventFullDTO eventFullDTO = EventFullDTO.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -90,8 +86,9 @@ public class EventMapper {
     }
 
     public EventShortDTO mapEntityToShortDTO(Event event) {
-        Integer stats = statsClient.getStats(null,null, List.of(event.getId().toString()),false)
-                .getOrDefault(event.getId(),0);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        Integer stats = statsClient.getStats(null, null, List.of(event.getId().toString()), false)
+                .getOrDefault(event.getId(), 0);
         EventShortDTO eventShortDTO = EventShortDTO.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())

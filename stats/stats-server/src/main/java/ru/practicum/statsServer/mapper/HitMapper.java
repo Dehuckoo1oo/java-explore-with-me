@@ -10,20 +10,23 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class HitMapper {
     public Hit mapDTOToEntity(HitDTO hitDTO) {
+        LocalDateTime now = LocalDateTime.now();
         Hit hit = Hit.builder()
                 .app(hitDTO.getApp())
                 .uri(hitDTO.getUri())
                 .ip(hitDTO.getIp())
-                .timestamp(LocalDateTime.parse(hitDTO.getTimestamp(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timestamp(now)
                 .build();
         return hit;
     }
 
     public HitDTO mapEntityToDTO(Hit hit) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String localDateTime = hit.getTimestamp().format(dateTimeFormatter);
         HitDTO hitDTO = HitDTO.builder()
                 .app(hit.getApp())
                 .ip(hit.getIp())
-                .timestamp(hit.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timestamp(localDateTime)
                 .uri(hit.getUri())
                 .build();
         return hitDTO;

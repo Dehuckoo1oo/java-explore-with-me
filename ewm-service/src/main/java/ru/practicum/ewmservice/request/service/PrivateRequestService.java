@@ -8,6 +8,7 @@ public interface PrivateRequestService {
 
     ParticipationRequestDTO createRequest(Integer userId, Integer eventId);
 
-    ParticipationRequestDTO cancelRequest( Integer userId, Integer requestId);
-    List<ParticipationRequestDTO> getRequestByUserId( Integer userId);
+    ParticipationRequestDTO cancelRequest(Integer userId, Integer requestId);
+
+    List<ParticipationRequestDTO> getRequestByUserId(Integer userId);
 }

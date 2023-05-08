@@ -8,14 +8,15 @@ import ru.practicum.ewmservice.event.DTO.EventFullDTO;
 import ru.practicum.ewmservice.event.DTO.NewEventDTO;
 import ru.practicum.ewmservice.event.DTO.UpdateEventDTO;
 import ru.practicum.ewmservice.event.enums.EventState;
+import ru.practicum.ewmservice.event.enums.EventStateAction;
 import ru.practicum.ewmservice.event.mapper.EventMapper;
 import ru.practicum.ewmservice.event.mapper.LocationMapper;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.event.repository.PrivateEventRepository;
+import ru.practicum.ewmservice.exception.ConflictException;
 import ru.practicum.ewmservice.exception.IncorrectlyException;
 import ru.practicum.ewmservice.exception.NoSuchBodyException;
-import ru.practicum.ewmservice.exception.NotFoundResourceException;
 import ru.practicum.ewmservice.request.DTO.ParticipationRequestDTO;
 import ru.practicum.ewmservice.request.enums.RequestStatus;
 import ru.practicum.ewmservice.request.mapper.RequestMapper;
@@ -25,7 +26,6 @@ import ru.practicum.ewmservice.request.model.ParticipationRequest;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepository;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -41,8 +41,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final EventMapper eventMapper;
     private final LocationMapper locationMapper;
     private final RequestMapper requestMapper;
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
 
     public PrivateEventServiceImpl(PrivateEventRepository privateEventRepository, UserRepository userRepository,
                                    PublicCategoryRepository publicCategoryRepository, EventMapper eventMapper,
@@ -69,6 +67,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     @Override
     public EventFullDTO updateEvent(Integer userId, Integer eventId, UpdateEventDTO updateEventDTO) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         User user = getUser(userId);
         Event event = getEvent(eventId);
         if (!user.getId().equals(event.getInitiator().getId())) {
@@ -78,22 +77,24 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         LocalDateTime eventDate;
         Category category;
         Location location;
+        if (event.getState().equals(EventState.PUBLISHED)) {
+            throw new ConflictException("Изменить можно только отмененные или не опубликованные ивенты");
+        }
         if (updateEventDTO.getEventDate() != null) {
             eventDate = LocalDateTime.parse(updateEventDTO.getEventDate(), dateTimeFormatter);
-            if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
-                throw new IncorrectlyException(String.format("Failed: eventDate. Error: должно содержать дату, " +
+            LocalDateTime nowDate = LocalDateTime.now().plusHours(2);
+            if (eventDate.isBefore(nowDate)) {
+                throw new ConflictException(String.format("Failed: eventDate. Error: должно содержать дату, " +
                         "которая еще не наступила Value:%s", eventDate));
             }
         } else {
-            throw new NotFoundResourceException(String.format("Failed: eventDate. Error: must not be blank " +
-                    "Value:%s", updateEventDTO.getEventDate()));
+            eventDate = event.getEventDate();
         }
 
         if (updateEventDTO.getCategory() != null) {
             category = getCategory(updateEventDTO.getCategory());
         } else {
-            throw new NotFoundResourceException(String.format("Failed: category. Error: must not be blank " +
-                    "Value:%s", updateEventDTO.getCategory()));
+            category = event.getCategory();
         }
 
         if (updateEventDTO.getLocation() != null) {
@@ -102,15 +103,28 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             location = event.getLocation();
         }
 
-        try {
-            EventState state = EventState.valueOf(updateEventDTO.getStateAction());
-            if (state.equals(EventState.CANCELED) && !event.getState().equals(EventState.PUBLISHED)) {
-                event.setState(EventState.CANCELED);
+        if (updateEventDTO.getStateAction() != null) {
+            EventStateAction state;
+            try {
+                state = EventStateAction.valueOf(updateEventDTO.getStateAction());
+            } catch (IllegalArgumentException e) {
+                throw new IncorrectlyException("Указан некорректный статус");
+            }
+            if (state.equals(EventStateAction.SEND_TO_REVIEW)) {
+                if (event.getState().equals(EventState.CANCELED) || event.getState().equals(EventState.REJECTED)) {
+                    event.setState(EventState.PENDING);
+                } else {
+                    throw new IncorrectlyException("Указан некорректный статус");
+                }
+            } else if (state.equals(EventStateAction.CANCEL_REVIEW)) {
+                if (event.getState().equals(EventState.PENDING)) {
+                    event.setState(EventState.CANCELED);
+                } else {
+                    throw new IncorrectlyException("Указан некорректный статус");
+                }
             } else {
                 throw new IncorrectlyException("Указан некорректный статус");
             }
-        } catch (IllegalArgumentException e) {
-            throw new IncorrectlyException("Указан некорректный статус");
         }
 
         if (updateEventDTO.getAnnotation() != null) {
@@ -161,7 +175,10 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         if (!event.getInitiator().equals(user)) {
             throw new NoSuchBodyException(String.format("User with id=%s not owned event with id=%s", userId, eventId));
         }
-        return event.getParticipationRequests().stream().map(requestMapper::mapEntityToDTO).collect(Collectors.toList());
+        List<ParticipationRequest> requests = event.getParticipationRequests();
+        List<ParticipationRequestDTO> requestsDTO = requests.stream().map(requestMapper::mapEntityToDTO)
+                .collect(Collectors.toList());
+        return requestsDTO;
     }
 
     @Override
@@ -176,14 +193,14 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
         Integer requestLimit = event.getParticipantLimit();
         if (!event.getRequestModeration() || requestLimit < 1) {
-            throw new NoSuchBodyException("No confirmation required");
+            throw new ConflictException("No confirmation required");
         }
 
         long countConfirmedRequest = event.getParticipationRequests().stream()
                 .filter(request -> request.getRequestStatus().equals(RequestStatus.CONFIRMED)).count();
 
         if (requestLimit < countConfirmedRequest) {
-            throw new NoSuchBodyException("Error: Requests out of limit");
+            throw new ConflictException("Error: Requests out of limit");
         }
         Map<Integer, ParticipationRequest> requests = new HashMap<>();
         event.getParticipationRequests().forEach(request -> requests.put(request.getId(), request));
@@ -191,11 +208,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
             if (countConfirmedRequest >= requestLimit) {
                 rejectAllPendingRequests(event);
                 privateEventRepository.save(event);
-                return requestMapper.mapResultByEvent(event);
+                throw new ConflictException("Error: Requests out of limit");
             }
             ParticipationRequest participationRequest = requests.get(requestId);
             if (!participationRequest.getRequestStatus().equals(RequestStatus.PENDING)) {
-                throw new NoSuchBodyException("Error: status can be changed only on PENDING request. Current status" +
+                throw new ConflictException("Error: status can be changed only on PENDING request. Current status" +
                         participationRequest.getRequestStatus());
             }
             participationRequest.setRequestStatus(requiredRequestStatus);
@@ -229,9 +246,11 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private void checkDate(String date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime eventDate = LocalDateTime.parse(date, dateTimeFormatter);
-        if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new IncorrectlyException(String.format("Failed: eventDate. Error: должно содержать дату, " +
+        LocalDateTime nowDate = LocalDateTime.now().plusHours(2);
+        if (eventDate.isBefore(nowDate)) {
+            throw new ConflictException(String.format("Failed: eventDate. Error: должно содержать дату, " +
                     "которая еще не наступила Value:%s", eventDate));
         }
     }

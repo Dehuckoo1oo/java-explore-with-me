@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface AdminCompilationService {
     CompilationDTO createCompilation(NewCompilationDTO newCompilationDTO);
-    CompilationDTO updateCompilation(UpdateCompilationDTO updateCompilationDTO,Integer compId);
+
+    CompilationDTO updateCompilation(UpdateCompilationDTO updateCompilationDTO, Integer compId);
+
     CompilationDTO deleteCompilation(Integer compId);
 }

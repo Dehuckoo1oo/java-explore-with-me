@@ -56,6 +56,9 @@ public class HitServiceImpl implements HitService {
 
     @Override
     public HitDTO createHit(HitDTO hitDTO) {
-        return hitMapper.mapEntityToDTO(hitRepository.save(hitMapper.mapDTOToEntity(hitDTO)));
+        Hit hit = hitMapper.mapDTOToEntity(hitDTO);
+        Hit savedHit = hitRepository.save(hit);
+        HitDTO savedHitDTO = hitMapper.mapEntityToDTO(savedHit);
+        return savedHitDTO;
     }
 }

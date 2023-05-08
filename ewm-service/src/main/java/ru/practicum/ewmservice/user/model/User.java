@@ -24,7 +24,7 @@ public class User {
     @Column(length = 800, nullable = false)
     private String email;
     @OneToMany
-    @JoinColumn(name = "requester_id", referencedColumnName = "id")
+    @JoinColumn(name = "requester", referencedColumnName = "id")
     private List<ParticipationRequest> participationRequestList;
     @OneToMany(mappedBy = "initiator")
     private List<Event> ownedEvents;

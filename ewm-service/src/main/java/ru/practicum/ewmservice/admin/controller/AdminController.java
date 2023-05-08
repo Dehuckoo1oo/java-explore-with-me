@@ -61,18 +61,20 @@ public class AdminController {
     }
 
     @PostMapping("/categories")
+    @ResponseStatus(HttpStatus.CREATED)
     public CategoryDTO createCategory(@Valid @RequestBody NewCategoryDTO newCategoryDTO) {
         return adminCategoryService.createCategory(newCategoryDTO);
     }
 
     @DeleteMapping("/categories/{catId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public CategoryDTO deleteCategory(@PathVariable Integer catId) {
         return adminCategoryService.deleteCategory(catId);
     }
 
     @GetMapping("/events")
     @ResponseStatus(HttpStatus.OK)
-    public List<EventFullDTO> getEvents(@RequestParam(name = "users", required = false) List<Long> ids,
+    public List<EventFullDTO> getEvents(@RequestParam(name = "users", required = false) List<Integer> ids,
                                         @RequestParam(name = "states", required = false) List<String> states,
                                         @RequestParam(name = "categories", required = false) List<Integer> categories,
                                         @RequestParam(name = "rangeStart", required = false) String rangeStart,
@@ -82,15 +84,16 @@ public class AdminController {
         return adminEventService.getEvents(ids, states, categories, rangeStart, rangeEnd, from, size);
     }
 
+    @PatchMapping("/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/categories/{eventId}")
     public EventFullDTO updateEvent(@PathVariable Integer eventId,
                                     @RequestBody UpdateEventAdminRequest updateEventDTO) {
         return adminEventService.updateEvent(eventId, updateEventDTO);
     }
 
     @PostMapping("/compilations")
-    public CompilationDTO createCompilation(@RequestBody NewCompilationDTO newCompilationDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public CompilationDTO createCompilation(@RequestBody @Valid NewCompilationDTO newCompilationDTO) {
         return adminCompilationService.createCompilation(newCompilationDTO);
     }
 
@@ -101,6 +104,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/compilations/{compId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public CompilationDTO deleteCompilation(@PathVariable Integer compId) {
         return adminCompilationService.deleteCompilation(compId);
     }

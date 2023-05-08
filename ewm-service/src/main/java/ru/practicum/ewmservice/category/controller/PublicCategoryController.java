@@ -17,12 +17,12 @@ public class PublicCategoryController {
 
     @GetMapping
     public List<CategoryDTO> getCategories(@RequestParam(name = "from", required = false, defaultValue = "0") int from,
-                                           @RequestParam(name = "size", required = false, defaultValue = "10") int size){
+                                           @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         return publicCategoryService.findCategories(from, size);
     }
 
-    @GetMapping("/categories/{catId}")
-    public CategoryDTO getCategory(@PathVariable Integer catId){
+    @GetMapping("/{catId}")
+    public CategoryDTO getCategory(@PathVariable Integer catId) {
         return publicCategoryService.findCategory(catId);
     }
 

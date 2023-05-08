@@ -4,9 +4,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class ApiError {
-
-    @Getter
     private final ErrorStatus status;
     private final String reason;
     private final String message;

@@ -12,12 +12,12 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @ToString
 public class NewEventDTO {
-    @Size(max = 2000,min = 20)
+    @Size(max = 2000, min = 20)
     @NotBlank
     private String annotation;
     @NotNull
     private Integer category;
-    @Size(max = 7000,min = 20)
+    @Size(max = 7000, min = 20)
     @NotBlank
     private String description;
     @NotNull

@@ -37,7 +37,9 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
         /*List<EventShortDTO> eventShortDTOs = events.stream().map(eventMapper::mapEntityToShortDTO)
                 .collect(Collectors.toList());*/
         Compilation compilation = compilationMapper.mapNewDTOToEntity(newCompilationDTO, events);
-        return compilationMapper.mapEntityToDTO(adminCompilationRepository.save(compilation));
+        Compilation savedCompilation = adminCompilationRepository.save(compilation);
+        CompilationDTO compilationDTO = compilationMapper.mapEntityToDTO(savedCompilation);
+        return compilationDTO;
     }
 
     @Override

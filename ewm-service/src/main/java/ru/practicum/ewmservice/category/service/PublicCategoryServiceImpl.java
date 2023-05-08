@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class PublicCategoryServiceImpl implements PublicCategoryService {
-    private PublicCategoryRepository publicCategoryRepository;
-    private CategoryMapper categoryMapper;
+    private final PublicCategoryRepository publicCategoryRepository;
+    private final CategoryMapper categoryMapper;
 
     public PublicCategoryServiceImpl(PublicCategoryRepository publicCategoryRepository, CategoryMapper categoryMapper) {
         this.publicCategoryRepository = publicCategoryRepository;
@@ -24,7 +24,7 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
 
     @Override
     public List<CategoryDTO> findCategories(Integer from, Integer size) {
-        Page<Category> categories = publicCategoryRepository.findAll(PageRequest.of(from,size));
+        Page<Category> categories = publicCategoryRepository.findAll(PageRequest.of(from, size));
         return categories.stream().map(cat -> categoryMapper.mapEntityToDTO(cat)).collect(Collectors.toList());
     }
 

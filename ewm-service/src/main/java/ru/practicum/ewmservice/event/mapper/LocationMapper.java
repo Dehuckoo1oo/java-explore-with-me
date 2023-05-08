@@ -14,12 +14,12 @@ public class LocationMapper {
         this.locationRepository = locationRepository;
     }
 
-    public Location mapDTOToEntity (LocationDTO locationDTO) {
+    public Location mapDTOToEntity(LocationDTO locationDTO) {
         Location location = Location.builder()
                 .lon(locationDTO.getLon())
                 .lat(locationDTO.getLat())
                 .build();
-        location = locationRepository.findByLatAndLon(location.getLat(),location.getLon())
+        location = locationRepository.findByLatAndLon(location.getLat(), location.getLon())
                 .orElse(locationRepository.save(location));
         return location;
     }

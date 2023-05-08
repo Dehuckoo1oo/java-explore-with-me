@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import ru.practicum.statsClient.StatsClient;
 
 @SpringBootApplication
-//@Import({StatsClient.class})
+@Import({StatsClient.class})
 public class EwmServiceApplication {
 
     public static void main(String[] args) {
