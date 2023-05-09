@@ -1,12 +1,8 @@
 package ru.practicum.ewmservice.event.DTO;
 
 import lombok.*;
-import ru.practicum.ewmservice.category.DTO.CategoryDTO;
 import ru.practicum.ewmservice.category.model.Category;
-import ru.practicum.ewmservice.user.DTO.UserShortDTO;
 import ru.practicum.ewmservice.user.model.User;
-
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter

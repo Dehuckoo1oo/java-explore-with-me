@@ -1,7 +1,6 @@
 package ru.practicum.ewmservice.event.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.ewmservice.category.mapper.CategoryMapper;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.event.DTO.EventFullDTO;
 import ru.practicum.ewmservice.event.DTO.EventShortDTO;
@@ -10,7 +9,6 @@ import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.event.model.Location;
 import ru.practicum.ewmservice.request.enums.RequestStatus;
-import ru.practicum.ewmservice.user.mapper.UserMapper;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.statsClient.StatsClient;
 
