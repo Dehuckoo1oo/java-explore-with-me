@@ -22,15 +22,10 @@ import java.util.List;
 @Component
 public class EventMapper {
     private final LocationMapper locationMapper;
-    private final UserMapper userMapper;
-    private final CategoryMapper categoryMapper;
     private final StatsClient statsClient;
 
-    public EventMapper(LocationMapper locationMapper, CategoryMapper categoryMapper, UserMapper userMapper,
-                       StatsClient statsClient) {
+    public EventMapper(LocationMapper locationMapper, StatsClient statsClient) {
         this.locationMapper = locationMapper;
-        this.categoryMapper = categoryMapper;
-        this.userMapper = userMapper;
         this.statsClient = statsClient;
     }
 
@@ -66,13 +61,13 @@ public class EventMapper {
         EventFullDTO eventFullDTO = EventFullDTO.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
-                .category(categoryMapper.mapEntityToDTO(event.getCategory()))
+                .category(new EventFullDTO.InnerCategory(event.getCategory()))
                 .confirmedRequests(event.getParticipationRequests().stream().filter(req -> req.getRequestStatus()
                         .equals(RequestStatus.CONFIRMED)).count())
                 .createdOn(event.getCreatedOn().format(dateTimeFormatter))
                 .description(event.getDescription())
                 .eventDate(event.getEventDate().format(dateTimeFormatter))
-                .initiator(userMapper.mapShortDTOFromUser(event.getInitiator()))
+                .initiator(new EventFullDTO.InnerInitiator(event.getInitiator()))
                 .location(locationMapper.mapEntityToDTO(event.getLocation()))
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
@@ -92,11 +87,11 @@ public class EventMapper {
         EventShortDTO eventShortDTO = EventShortDTO.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
-                .category(categoryMapper.mapEntityToDTO(event.getCategory()))
+                .category(new EventShortDTO.InnerCategory(event.getCategory()))
                 .confirmedRequests(event.getParticipationRequests().stream().filter(req -> req.getRequestStatus()
                         .equals(RequestStatus.CONFIRMED)).count())
                 .eventDate(event.getEventDate().format(dateTimeFormatter))
-                .initiator(userMapper.mapShortDTOFromUser(event.getInitiator()))
+                .initiator(new EventShortDTO.InnerInitiator(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
                 .views(stats)

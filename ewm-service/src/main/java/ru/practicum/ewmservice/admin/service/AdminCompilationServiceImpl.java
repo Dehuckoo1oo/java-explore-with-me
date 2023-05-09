@@ -33,8 +33,6 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     @Override
     public CompilationDTO createCompilation(NewCompilationDTO newCompilationDTO) {
         List<Event> events = adminEventRepository.findAllById(newCompilationDTO.getEvents());
-        /*List<EventShortDTO> eventShortDTOs = events.stream().map(eventMapper::mapEntityToShortDTO)
-                .collect(Collectors.toList());*/
         Compilation compilation = compilationMapper.mapNewDTOToEntity(newCompilationDTO, events);
         Compilation savedCompilation = adminCompilationRepository.save(compilation);
         CompilationDTO compilationDTO = compilationMapper.mapEntityToDTO(savedCompilation);

@@ -6,7 +6,6 @@ import ru.practicum.ewmservice.event.enums.EventStateAction;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

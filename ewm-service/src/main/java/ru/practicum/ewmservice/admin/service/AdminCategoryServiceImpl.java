@@ -10,9 +10,11 @@ import ru.practicum.ewmservice.category.DTO.NewCategoryDTO;
 import ru.practicum.ewmservice.exception.ConflictException;
 import ru.practicum.ewmservice.exception.NoSuchBodyException;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AdminCategoryServiceImpl implements AdminCategoryService {
     private AdminCategoryRepository adminCategoryRepository;
     private AdminEventRepository adminEventRepository;
