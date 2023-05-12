@@ -1,9 +1,7 @@
 package ru.practicum.ewmservice.comment.service;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.comment.DTO.CommentFullDTO;
-import ru.practicum.ewmservice.comment.DTO.CommentShortDTO;
 import ru.practicum.ewmservice.comment.DTO.NewCommentDTO;
 import ru.practicum.ewmservice.comment.DTO.UpdateCommentDTO;
 import ru.practicum.ewmservice.comment.mapper.CommentMapper;
@@ -51,7 +49,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
             throw new ConflictException(String.format("User with id=%s not owned comment with id=%s", userId,
                     commentId));
         }
-        if(!comment.getEvent().getId().equals(eventId)) {
+        if (!comment.getEvent().getId().equals(eventId)) {
             throw new ConflictException(String.format("Comment with id=%s not from event with id=%s", commentId,
                     eventId));
         }
@@ -65,19 +63,18 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         User user = checkUser(userId);
         checkEvent(eventId);
         Comment comment = checkComment(commentId);
-        if(!comment.getAuthor().equals(user)) {
+        if (!comment.getAuthor().equals(user)) {
             throw new ConflictException(String.format("User with id=%s not owned comment with id=%s", userId,
                     commentId));
         }
 
-        if(!comment.getEvent().getId().equals(eventId)) {
+        if (!comment.getEvent().getId().equals(eventId)) {
             throw new ConflictException(String.format("Comment with id=%s not from event with id=%s", commentId,
                     eventId));
         }
         privateCommentRepository.delete(comment);
         return commentMapper.mapEntityToFullDTO(comment);
     }
-
 
 
     private User checkUser(Integer userId) {

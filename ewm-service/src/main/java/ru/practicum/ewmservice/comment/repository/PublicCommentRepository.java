@@ -6,8 +6,9 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.ewmservice.comment.model.Comment;
 
 import java.util.List;
+
 @Repository
-public interface PublicCommentRepository extends JpaRepository<Comment,Long> {
+public interface PublicCommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findCommentsByEventId(Integer eventId, Pageable pageable);
 }

@@ -2,7 +2,6 @@ package ru.practicum.ewmservice.event.model;
 
 import lombok.*;
 import ru.practicum.ewmservice.category.model.Category;
-import ru.practicum.ewmservice.comment.model.Comment;
 import ru.practicum.ewmservice.event.enums.EventState;
 import ru.practicum.ewmservice.request.model.ParticipationRequest;
 import ru.practicum.ewmservice.user.model.User;

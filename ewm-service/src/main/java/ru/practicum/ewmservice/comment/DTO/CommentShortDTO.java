@@ -4,7 +4,6 @@ import lombok.*;
 import ru.practicum.ewmservice.event.DTO.EventShortDTO;
 import ru.practicum.ewmservice.user.DTO.UserShortDTO;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
