@@ -879,7 +879,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 400\", function(){",
+							"pm.test(\"Ответ должен содержать код статуса 404\", function(){",
 							"    pm.response.to.have.status(404);",
 							"    pm.response.to.be.withBody;",
 							"    pm.response.to.be.json;",
