@@ -903,7 +903,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/users/2/events/2/comments/3",
+					"raw": "http://localhost:8080/users/2/events/999/comments/3",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -913,7 +913,7 @@
 						"users",
 						"2",
 						"events",
-						"2",
+						"999",
 						"comments",
 						"3"
 					]
