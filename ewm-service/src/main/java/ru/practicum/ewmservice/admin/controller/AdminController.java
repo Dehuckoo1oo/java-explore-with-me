@@ -3,18 +3,16 @@ package ru.practicum.ewmservice.admin.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.admin.DTO.UpdateEventAdminRequest;
-import ru.practicum.ewmservice.admin.service.AdminCategoryService;
-import ru.practicum.ewmservice.admin.service.AdminCompilationService;
-import ru.practicum.ewmservice.admin.service.AdminEventService;
+import ru.practicum.ewmservice.admin.service.*;
 import ru.practicum.ewmservice.category.DTO.CategoryDTO;
 import ru.practicum.ewmservice.category.DTO.NewCategoryDTO;
+import ru.practicum.ewmservice.comment.DTO.CommentFullDTO;
 import ru.practicum.ewmservice.compilation.DTO.CompilationDTO;
 import ru.practicum.ewmservice.compilation.DTO.NewCompilationDTO;
 import ru.practicum.ewmservice.compilation.DTO.UpdateCompilationDTO;
 import ru.practicum.ewmservice.event.DTO.EventFullDTO;
 import ru.practicum.ewmservice.user.DTO.NewUserDTO;
 import ru.practicum.ewmservice.user.DTO.UserDTO;
-import ru.practicum.ewmservice.admin.service.AdminUserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,13 +24,16 @@ public class AdminController {
     private AdminCategoryService adminCategoryService;
     private AdminEventService adminEventService;
     private AdminCompilationService adminCompilationService;
+    private AdminCommentService adminCommentService;
 
     public AdminController(AdminUserService adminUserService, AdminCategoryService adminCategoryService,
-                           AdminEventService adminEventService, AdminCompilationService adminCompilationService) {
+                           AdminEventService adminEventService, AdminCompilationService adminCompilationService,
+                           AdminCommentService adminCommentService) {
         this.adminUserService = adminUserService;
         this.adminCategoryService = adminCategoryService;
         this.adminEventService = adminEventService;
         this.adminCompilationService = adminCompilationService;
+        this.adminCommentService = adminCommentService;
     }
 
     @PostMapping("/users")
@@ -107,6 +108,18 @@ public class AdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public CompilationDTO deleteCompilation(@PathVariable Integer compId) {
         return adminCompilationService.deleteCompilation(compId);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public CommentFullDTO deleteComment(@PathVariable Long commentId) {
+        return adminCommentService.removeCommentById(commentId);
+    }
+
+    @GetMapping("/comments/{commentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentFullDTO findComment(@PathVariable Long commentId) {
+        return adminCommentService.findCommentById(commentId);
     }
 
 }

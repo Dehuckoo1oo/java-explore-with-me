@@ -5,11 +5,12 @@ DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS requests CASCADE;
 DROP TABLE IF EXISTS compilations CASCADE;
 DROP TABLE IF EXISTS compilation_events CASCADE;
+DROP TABLE IF EXISTS event_comments CASCADE;
 
 CREATE TABLE users
 (
     id    INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name  VARCHAR(50) NOT NULL,
+    name  VARCHAR(50)  NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE
 );
 
@@ -68,6 +69,19 @@ CREATE TABLE compilation_events
     event       INTEGER NOT NULL
 );
 
+CREATE TABLE event_comments
+(
+    id      BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    author  INTEGER                     NOT NULL,
+    event   INTEGER                     NOT NULL,
+    text    VARCHAR(800),
+    created TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+ALTER TABLE event_comments
+    ADD FOREIGN KEY (event) REFERENCES events (id) ON DELETE CASCADE;
+ALTER TABLE event_comments
+    ADD FOREIGN KEY (author) REFERENCES users (id) ON DELETE CASCADE;
 ALTER TABLE compilation_events
     ADD FOREIGN KEY (compilation) REFERENCES compilations (id) ON DELETE CASCADE;
 ALTER TABLE compilation_events
