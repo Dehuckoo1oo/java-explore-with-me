@@ -38,8 +38,9 @@ public class CommentMapper {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         CommentFullDTO commentFullDTO = CommentFullDTO.builder()
                 .id(comment.getId())
-                .author(userMapper.mapShortDTOFromUser(comment.getAuthor()))
-                .eventShortDTO(eventMapper.mapEntityToShortDTO(comment.getEvent()))
+                .author(new CommentFullDTO.InnerAuthor(comment.getAuthor()))
+                .eventShortDTO(new CommentFullDTO.InnerEventShortDTO(
+                        eventMapper.mapEntityToShortDTO(comment.getEvent())))
                 .text(comment.getText())
                 .created(comment.getCreated().format(dateTimeFormatter))
                 .build();
@@ -50,7 +51,7 @@ public class CommentMapper {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         CommentShortDTO commentShortDTO = CommentShortDTO.builder()
                 .id(comment.getId())
-                .author(userMapper.mapShortDTOFromUser(comment.getAuthor()))
+                .author(new CommentShortDTO.InnerAuthor(comment.getAuthor()))
                 .text(comment.getText())
                 .created(comment.getCreated().format(dateTimeFormatter))
                 .build();

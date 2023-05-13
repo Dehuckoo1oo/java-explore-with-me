@@ -1,8 +1,7 @@
 package ru.practicum.ewmservice.comment.DTO;
 
 import lombok.*;
-import ru.practicum.ewmservice.event.DTO.EventShortDTO;
-import ru.practicum.ewmservice.user.DTO.UserShortDTO;
+import ru.practicum.ewmservice.user.model.User;
 
 
 @Getter
@@ -12,8 +11,21 @@ import ru.practicum.ewmservice.user.DTO.UserShortDTO;
 @Builder
 public class CommentShortDTO {
     private Long id;
-    private UserShortDTO author;
-    private EventShortDTO eventShortDTO;
+    private InnerAuthor author;
+    private CommentFullDTO.InnerEventShortDTO eventShortDTO;
     private String text;
     private String created;
+
+    @Getter
+    @Setter
+    public static class InnerAuthor {
+        private Integer id;
+        private String name;
+
+        public InnerAuthor(User user) {
+            this.id = user.getId();
+            this.name = user.getName();
+        }
+    }
+
 }
